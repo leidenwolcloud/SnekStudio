@@ -167,17 +167,17 @@ func _input(event : InputEvent) -> void:
 				"action": action.replace(KEYBIND_PREFIX, ""),
 				 "event": event
 			})
-	# This is one way to do actions. The other is with global mod data.
-	if InputMap.has_action(KEYBIND_PREFIX + "ping") \
-		and event.is_action_pressed(KEYBIND_PREFIX + "ping", false, true):
-		print_log("Input map pong!")
-		set_status("Pong!")
+	# This is one way to do actions. The5 other is with global mod data.
+	#if InputMap.has_action(KEYBIND_PREFIX + "ping") \
+		#and event.is_action_pressed(KEYBIND_PREFIX + "ping", false, true):
+		#print_log("Input map pong!")
+		#set_status("Pong!")
 
 	# The alternative approach is commented below.
-	#func _handle_global_mod_message(key : String, values : Dictionary):
-		#if key == "KeybindsActionPressed" and values["action"] == "ping":
-			#print_log("Global mod message pong!")
-			#set_status("Pong!")
+func _handle_global_mod_message(key : String, values : Dictionary):
+	if key == "KeybindsActionPressed" and values["action"] == "ping":
+		print_log("Global mod message pong!")
+		set_status("Pong!")
 
 func _get_key_action_by_item(item : Dictionary):
 	for i in key_actions:
