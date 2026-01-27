@@ -1,1 +1,0 @@
-Customise keybinds for various actions across SnekStudio.
