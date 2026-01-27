@@ -1,0 +1,33 @@
+[gd_scene load_steps=4 format=3 uid="uid://7s81kngjyydg"]
+
+[ext_resource type="Script" uid="uid://bhhbyow5whilb" path="res://Mods/Expressions/Expressions.gd" id="1_m15ra"]
+[ext_resource type="Script" uid="uid://c0gsa6tqvr0h8" path="res://Mods/Expressions/Resources/ExpressionsSettingsUI.gd" id="2_26dqp"]
+[ext_resource type="PackedScene" uid="uid://6mek5a40s427" path="res://Mods/Expressions/Resources/ExpressionUI.tscn" id="3_26dqp"]
+
+[node name="Expressions" type="Node3D" node_paths=PackedStringArray("panel")]
+script = ExtResource("1_m15ra")
+panel = NodePath("TempPanel")
+
+[node name="TempPanel" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SettingsUIContainer" type="ScrollContainer" parent="TempPanel" node_paths=PackedStringArray("attached")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 70.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_26dqp")
+base = ExtResource("3_26dqp")
+attached = NodePath("FlowContainer")
+
+[node name="FlowContainer" type="FlowContainer" parent="TempPanel/SettingsUIContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
