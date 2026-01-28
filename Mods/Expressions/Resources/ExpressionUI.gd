@@ -13,11 +13,16 @@ func set_item(item : Dictionary) -> void:
 	# Bind to the UI item.
 	ui_item = item
 
-	var action : String = item["keybind_name"]
+	#var action : String = item["keybind_name"]
 	#if item["key"] != -1:
 		#_set_key_bind_display(item)
 
-	%BlendShapeNameTxt.text = action
+	%BlendShapeNameTxt.text = item["blendshape_name"]
+	%KeybindNameDisplay.text = item["keybind_name"]
+	%IntensitySlider.value = item["intensity"]
+	%IntensityLabel.text = str(item["intensity"])
+	%SlewTimeSlider.value = item["slew_time"]
+	%SlewTimeLabel.text = str(item["slew_time"])
 	# emit_signal("on_change_item", ChangeAction.INITIAL, item, {})
 
 func _set_key_bind_display(item : Dictionary):
@@ -58,8 +63,14 @@ func _on_delete_btn_pressed() -> void:
 	queue_free()
 
 func _on_slew_time_slider_value_changed(value: float) -> void:
+	old_item = ui_item.duplicate()
+	ui_item["slew_time"] = value
+	emit_signal("on_change_item", ExpressionsChangeAction.SLEW_TIME, ui_item, old_item)
 	%SlewTimeLabel.text = str(value)
 
 
 func _on_intensity_slider_value_changed(value: float) -> void:
+	old_item = ui_item.duplicate()
+	ui_item["intensity"] = value
+	emit_signal("on_change_item", ExpressionsChangeAction.INTENSITY, ui_item, old_item)
 	%IntensityLabel.text = str(value)

@@ -3,5 +3,7 @@ enum {
 	DELETE = 1,
 	INITIAL = 2,
 	BLENDSHAPE_NAME = 3,
-	KEY_BIND = 4
+	KEY_BIND = 4,
+	SLEW_TIME = 5,
+	INTENSITY = 6
 }

@@ -57,7 +57,7 @@ func _new_keybind() -> void:
 	settings_ui.add_key_action(null)
 
 func on_ui_change_item(action : int, item : Dictionary, old_item : Dictionary):
-	if action == ExpressionsChangeAction.BLENDSHAPE_NAME or action == ExpressionsChangeAction.KEY_BIND:
+	if action != ExpressionsChangeAction.DELETE:
 		# Updates should be fine as there is a reference to the item.
 		# We only have to check if there isn't an item, then add an item.
 		if action == ExpressionsChangeAction.BLENDSHAPE_NAME \
@@ -69,7 +69,7 @@ func on_ui_change_item(action : int, item : Dictionary, old_item : Dictionary):
 		else:
 			print_log("KEY_BIND")
 			_update_action(item, old_item)
-	if action == ExpressionsChangeAction.DELETE:
+	else:
 		# Remove the existing item from our key_actions.
 		_remove_key_action_by_item(item)
 
@@ -112,15 +112,15 @@ func _create_action(item : Dictionary) -> void:
 		return
 
 	print_log("Creating new action and associated event %s" % keybind_name)
-	var key_event = _create_key_event(item)
+	#var key_event = _create_key_event(item)
 
-	if not InputMap.has_action(KEYBIND_PREFIX + keybind_name):
-		InputMap.add_action(KEYBIND_PREFIX + keybind_name)
+	#if not InputMap.has_action(KEYBIND_PREFIX + keybind_name):
+		#InputMap.add_action(KEYBIND_PREFIX + keybind_name)
 
 	# Always add the event to the action, if there is no action it was made.
 	# existing events for the action have been cleared.	
-	if key_event != null:
-		InputMap.action_add_event(KEYBIND_PREFIX + keybind_name, key_event)
+	#if key_event != null:
+		#InputMap.action_add_event(KEYBIND_PREFIX + keybind_name, key_event)
 
 func _update_action(new_item : Dictionary, old_item : Dictionary) -> void:
 	var new_action = new_item["blendshape_name"]
@@ -131,9 +131,9 @@ func _update_action(new_item : Dictionary, old_item : Dictionary) -> void:
 	if new_action != old_action:
 		print_log("New item action name (%s) is different from the old (%s)." % 
 					[new_action, old_action])
-		var existing_events = InputMap.action_get_events(KEYBIND_PREFIX + old_action)
-		if old_action != "" and len(existing_events) < 1:
-			InputMap.erase_action(KEYBIND_PREFIX + old_action)
+		#var existing_events = InputMap.action_get_events(KEYBIND_PREFIX + old_action)
+		#if old_action != "" and len(existing_events) < 1:
+			#InputMap.erase_action(KEYBIND_PREFIX + old_action)
 		_create_action(new_item)
 	elif new_key != old_key \
 		 or new_item["blendshape_name"] != old_item["blendshape_name"] \
@@ -142,25 +142,25 @@ func _update_action(new_item : Dictionary, old_item : Dictionary) -> void:
 		if old_key != "":
 			print_log("Old item key is not unassigned. Removing the old item key event.")
 			var old_key_event = _create_key_event(old_item)
-			if new_action == "":
-				# We need to cycle through all actions and events
-				# and find where the key is used and remove it.
-				for action_name in InputMap.get_actions():
-					if not action_name.begins_with(KEYBIND_PREFIX):
-						continue
-					if not InputMap.event_is_action(old_key_event, action_name, true):
-						continue
-					print("Removing orphan event from %s action" % action_name)
-					InputMap.action_erase_event(action_name, old_key_event)
-			else:
-				InputMap.action_erase_event(KEYBIND_PREFIX + new_action, old_key_event)
+			#if new_action == "":
+				## We need to cycle through all actions and events
+				## and find where the key is used and remove it.
+				#for action_name in InputMap.get_actions():
+					#if not action_name.begins_with(KEYBIND_PREFIX):
+						#continue
+					#if not InputMap.event_is_action(old_key_event, action_name, true):
+						#continue
+					#print("Removing orphan event from %s action" % action_name)
+					#InputMap.action_erase_event(action_name, old_key_event)
+			#else:
+				#InputMap.action_erase_event(KEYBIND_PREFIX + new_action, old_key_event)
 
-		print_log("Adding event for the action name with the correct key.")
+		#print_log("Adding event for the action name with the correct key.")
 
 		# We only want to create a new key event if it wasn't reset.
-		var new_key_event = _create_key_event(new_item)
-		if new_key_event != null and new_action != "":
-			InputMap.action_add_event(KEYBIND_PREFIX + new_action, new_key_event)
+		#var new_key_event = _create_key_event(new_item)
+		#if new_key_event != null and new_action != "":
+			#InputMap.action_add_event(KEYBIND_PREFIX + new_action, new_key_event)
 
 #func _input(event : InputEvent) -> void:
 	#for action in InputMap.get_actions():

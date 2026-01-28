@@ -60,17 +60,20 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Panel/VBoxContainer/VBoxContainer2"]
 layout_mode = 2
-text = "Expression intensity"
+text = "Expression slew time"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer/VBoxContainer2"]
 layout_mode = 2
 alignment = 1
 
 [node name="SlewTimeSlider" type="HSlider" parent="Panel/VBoxContainer/VBoxContainer2/HBoxContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
-max_value = 1.0
-step = 0.05
+min_value = 0.5
+max_value = 20.0
+step = 0.5
+value = 0.5
 
 [node name="SlewTimeLabel" type="Label" parent="Panel/VBoxContainer/VBoxContainer2/HBoxContainer"]
 unique_name_in_owner = true
@@ -82,18 +85,18 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Panel/VBoxContainer/VBoxContainer3"]
 layout_mode = 2
-text = "Expression slew time"
+text = "Expression intensity"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer/VBoxContainer3"]
 layout_mode = 2
 alignment = 1
 
 [node name="IntensitySlider" type="HSlider" parent="Panel/VBoxContainer/VBoxContainer3/HBoxContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
-min_value = 0.5
-max_value = 20.0
-step = 0.5
+max_value = 1.0
+step = 0.1
 value = 0.5
 
 [node name="IntensityLabel" type="Label" parent="Panel/VBoxContainer/VBoxContainer3/HBoxContainer"]
