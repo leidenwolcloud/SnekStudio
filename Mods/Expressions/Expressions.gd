@@ -16,14 +16,14 @@ var KEYBIND_PREFIX : String = "kb_"
 
 func _ready() -> void:
 	# Alert all mods that rely on keybinds of the prefix we are using.
-	var global_dict = get_global_mod_data("Keybinds")
-	if not global_dict.has("prefix"):
-		global_dict["prefix"] = KEYBIND_PREFIX
-	else:
-		KEYBIND_PREFIX = global_dict["prefix"]
-
-	# Not essential, but allows us to reference it in other mods quickly.
-	send_global_mod_message("Keybinds", global_dict)
+	#var global_dict = get_global_mod_data("Keybinds")
+	#if not global_dict.has("prefix"):
+		#global_dict["prefix"] = KEYBIND_PREFIX
+	#else:
+		#KEYBIND_PREFIX = global_dict["prefix"]
+#
+	## Not essential, but allows us to reference it in other mods quickly.
+	#send_global_mod_message("Keybinds", global_dict)
 
 	# Remove the temp panel and attach the children to the 
 	# settings window! This way we aren't messing around with
@@ -58,7 +58,7 @@ func on_ui_change_item(action : int, item : Dictionary, old_item : Dictionary):
 		# Updates should be fine as there is a reference to the item.
 		# We only have to check if there isn't an item, then add an item.
 		if action == ExpressionsChangeAction.BLENDSHAPE_NAME \
-		   and item["action_name"] != "" \
+		   and item["blendshape_name"] != "" \
 		   and _get_key_action_by_item(item) == null:
 			key_actions.append(item)
 			_create_action(item)
@@ -69,17 +69,17 @@ func on_ui_change_item(action : int, item : Dictionary, old_item : Dictionary):
 		_remove_key_action_by_item(item)
 
 		# Adjust our input map.
-		var action_event_count = len(InputMap.action_get_events(KEYBIND_PREFIX + item["action_name"]))
+		var action_event_count = len(InputMap.action_get_events(KEYBIND_PREFIX + item["blendshape_name"]))
 		if action_event_count <= 1:
 			# Delete the entire action.
-			print_log("Deleting the entire action for %s" % item["action_name"])
-			InputMap.erase_action(KEYBIND_PREFIX + item["action_name"])
+			print_log("Deleting the entire action for %s" % item["blendshape_name"])
+			InputMap.erase_action(KEYBIND_PREFIX + item["blendshape_name"])
 		else:
 			# Delete just our event.
 			var key_event = _create_key_event(item)
 			if key_event != null:
-				print_log("Deleting just our event for %s" % item["action_name"])
-				InputMap.action_erase_event(KEYBIND_PREFIX + item["action_name"], key_event)
+				print_log("Deleting just our event for %s" % item["blendshape_name"])
+				InputMap.action_erase_event(KEYBIND_PREFIX + item["blendshape_name"], key_event)
 
 	save_settings()
 
@@ -100,7 +100,7 @@ func _create_key_event(item : Dictionary) -> InputEventKey:
 	return new_key_event
 
 func _create_action(item : Dictionary) -> void:
-	var action = item["action_name"]
+	var action = item["blendshape_name"]
 
 	# Do not create empty.
 	if action == "":
@@ -118,10 +118,10 @@ func _create_action(item : Dictionary) -> void:
 		InputMap.action_add_event(KEYBIND_PREFIX + action, key_event)
 
 func _update_action(new_item : Dictionary, old_item : Dictionary) -> void:
-	var new_action = new_item["action_name"]
-	var old_action = old_item["action_name"]
-	var new_key = new_item["key"]
-	var old_key = old_item["key"]
+	var new_action = new_item["blendshape_name"]
+	var old_action = old_item["blendshape_name"]
+	var new_key = new_item["keybind_name"]
+	var old_key = old_item["keybind_name"]
 
 	if new_action != old_action:
 		print_log("New item action name (%s) is different from the old (%s)." % 
@@ -131,10 +131,8 @@ func _update_action(new_item : Dictionary, old_item : Dictionary) -> void:
 			InputMap.erase_action(KEYBIND_PREFIX + old_action)
 		_create_action(new_item)
 	elif new_key != old_key \
-		 or new_item["modifier_alt"] != old_item["modifier_alt"] \
-		 or new_item["modifier_ctrl"] != old_item["modifier_ctrl"] \
-		 or new_item["modifier_shift"] != old_item["modifier_shift"] \
-		 or new_item["modifier_meta"] != old_item["modifier_meta"]:
+		 or new_item["blendshape_name"] != old_item["blendshape_name"] \
+		 or new_item["keybind_name"] != old_item["keybind_name"]:
 		print_log("New item key is not the same as the old key.")
 		if old_key != -1:
 			print_log("Old item key is not unassigned. Removing the old item key event.")
@@ -175,21 +173,20 @@ func _update_action(new_item : Dictionary, old_item : Dictionary) -> void:
 
 	# The alternative approach is commented below.
 func _handle_global_mod_message(key : String, values : Dictionary):
-	if key == "KeybindsActionPressed" and values["action"] == "ping":
-		print_log("Global mod message pong!")
-		set_status("Pong!")
+	if key == "KeybindsActionPressed":
+		print_log(values["action"])
 
 func _get_key_action_by_item(item : Dictionary):
 	for i in key_actions:
-		if i["key"] == item["key"] and i["action_name"] == item["action_name"]:
+		if i["keybind_name"] == item["keybind_name"] and i["blendshape_name"] == item["blendshape_name"]:
 			return i
 	return null
 
 func _update_key_action_by_item(item : Dictionary, new_item : Dictionary) -> bool:
 	for i in key_actions:
-		if i["key"] == item["key"] and i["action_name"] == item["action_name"]:
-			i["key"] = new_item["key"]
-			i["action_name"] = new_item["action_name"]
+		if i["keybind_name"] == item["keybind_name"] and i["blendshape_name"] == item["blendshape_name"]:
+			i["keybind_name"] = new_item["keybind_name"]
+			i["blendshape_name"] = new_item["blendshape_name"]
 			return true
 	return false
 
@@ -208,20 +205,9 @@ func _create_initial_actions() -> void:
 	key_actions = [
 		{ 
 			"key": KEY_P,
-			"action_name": "ping",
-			"modifier_alt": false,
-			"modifier_ctrl": false,
-			"modifier_meta": false,
-			"modifier_shift": false
-		},
-		{ 
-			"key": KEY_Y,
-			"action_name": "ping",
-			"modifier_alt": false,
-			"modifier_ctrl": true,
-			"modifier_meta": false,
-			"modifier_shift": false
-		},
+			"blendshape_name": "surprised",
+			"keybind_name": ""
+		}
 	]
 
 func _remove_actions() -> void:

@@ -13,32 +13,25 @@ func set_item(item : Dictionary) -> void:
 	# Bind to the UI item.
 	ui_item = item
 
-	var action : String = item["action_name"]
-	if item["key"] != -1:
-		_set_key_bind_display(item)
+	var action : String = item["keybind_name"]
+	#if item["key"] != -1:
+		#_set_key_bind_display(item)
 
-	%ActionNameTxt.text = action
-	emit_signal("on_change_item", ChangeAction.INITIAL, item, {})
+	%BlendShapeNameTxt.text = action
+	# emit_signal("on_change_item", ChangeAction.INITIAL, item, {})
 
 func _set_key_bind_display(item : Dictionary):
 	var key_code : Key = item["key"]
-	var alt_pressed = item.get("modifier_alt", false)
-	var ctrl_pressed = item.get("modifier_ctrl", false)
-	var meta_pressed = item.get("modifier_meta", false)
-	var shift_pressed = item.get("modifier_shift", false)
 	
 	var input_event = InputEventKey.new()
 	input_event.physical_keycode = key_code
-	input_event.alt_pressed = alt_pressed
-	input_event.ctrl_pressed = ctrl_pressed
-	input_event.meta_pressed = meta_pressed
-	input_event.shift_pressed = shift_pressed
+
 
 	var display_bind = OS.get_keycode_string(
 		DisplayServer.keyboard_get_label_from_physical(
 			input_event.get_physical_keycode_with_modifiers()))
-
-	%KeybindDisplay.text = display_bind
+	print_debug(display_bind)
+	%KeybindNameDisplay.text = display_bind
 
 ## Set the UI item to be blank.
 func blank_item() -> void:
@@ -52,7 +45,7 @@ func _on_blendshape_name_txt_text_changed(new_text : String) -> void:
 	ui_item["blendshape_name"] = new_text
 	emit_signal("on_change_item", ExpressionsChangeAction.BLENDSHAPE_NAME, ui_item, old_item)
 	
-func _on_keybind_name_txt_text_changed(new_text : String) -> void:
+func _on_keybind_name_display_text_changed(new_text : String) -> void:
 	old_item = ui_item.duplicate()
 	ui_item["blendshape_name"] = new_text
 	emit_signal("on_change_item", ExpressionsChangeAction.KEY_BIND, ui_item, old_item)
@@ -60,7 +53,7 @@ func _on_keybind_name_txt_text_changed(new_text : String) -> void:
 func _on_delete_btn_pressed() -> void:
 	emit_signal("on_change_item", ExpressionsChangeAction.DELETE, ui_item, {})
 	queue_free()
-
+	
 #func _input(event : InputEvent):
 	#if currently_setting and event is InputEventKey:
 		#var key_event : InputEventKey = event
@@ -80,3 +73,10 @@ func _on_delete_btn_pressed() -> void:
 		#%SetBtn.text = "Set"
 		#emit_signal("on_change_item", ExpressionsChangeAction.KEY_BIND, ui_item, old_item)
 		#_set_key_bind_display(ui_item)
+
+func _on_slew_time_slider_value_changed(value: float) -> void:
+	%SlewTimeLabel.text = str(value)
+
+
+func _on_intensity_slider_value_changed(value: float) -> void:
+	%IntensityLabel.text = str(value)
