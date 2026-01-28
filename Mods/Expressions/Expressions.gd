@@ -18,19 +18,6 @@ var expression_curr: Dictionary
 var expression_next: Dictionary
 
 func _ready() -> void:
-	# Alert all mods that rely on keybinds of the prefix we are using.
-	#var global_dict = get_global_mod_data("Keybinds")
-	#if not global_dict.has("prefix"):
-		#global_dict["prefix"] = KEYBIND_PREFIX
-	#else:
-		#KEYBIND_PREFIX = global_dict["prefix"]
-#
-	## Not essential, but allows us to reference it in other mods quickly.
-	#send_global_mod_message("Keybinds", global_dict)
-
-	# Remove the temp panel and attach the children to the 
-	# settings window! This way we aren't messing around with
-	# tracked settings, and instead are simply loading our own UI.
 	remove_child(panel)
 
 	var new_keybind_button : Button = Button.new()
@@ -112,72 +99,20 @@ func _create_action(item : Dictionary) -> void:
 		return
 
 	print_log("Creating new action and associated event %s" % keybind_name)
-	#var key_event = _create_key_event(item)
 
-	#if not InputMap.has_action(KEYBIND_PREFIX + keybind_name):
-		#InputMap.add_action(KEYBIND_PREFIX + keybind_name)
-
-	# Always add the event to the action, if there is no action it was made.
-	# existing events for the action have been cleared.	
-	#if key_event != null:
-		#InputMap.action_add_event(KEYBIND_PREFIX + keybind_name, key_event)
-
+# TODO: rework to save updated expression data instead of keybinds
 func _update_action(new_item : Dictionary, old_item : Dictionary) -> void:
-	var new_action = new_item["blendshape_name"]
-	var old_action = old_item["blendshape_name"]
-	var new_key = new_item["keybind_name"]
-	var old_key = old_item["keybind_name"]
+	var new_blendshape = new_item["blendshape_name"]
+	var old_blendshape = old_item["blendshape_name"]
 
-	if new_action != old_action:
-		print_log("New item action name (%s) is different from the old (%s)." % 
-					[new_action, old_action])
-		#var existing_events = InputMap.action_get_events(KEYBIND_PREFIX + old_action)
-		#if old_action != "" and len(existing_events) < 1:
-			#InputMap.erase_action(KEYBIND_PREFIX + old_action)
+	if new_blendshape != old_blendshape:
+		print_log("New item blendshape name (%s) is different from the old (%s)." % 
+					[new_blendshape, old_blendshape])
 		_create_action(new_item)
-	elif new_key != old_key \
-		 or new_item["blendshape_name"] != old_item["blendshape_name"] \
-		 or new_item["keybind_name"] != old_item["keybind_name"]:
-		print_log("New item key is not the same as the old key.")
-		if old_key != "":
-			print_log("Old item key is not unassigned. Removing the old item key event.")
-			var old_key_event = _create_key_event(old_item)
-			#if new_action == "":
-				## We need to cycle through all actions and events
-				## and find where the key is used and remove it.
-				#for action_name in InputMap.get_actions():
-					#if not action_name.begins_with(KEYBIND_PREFIX):
-						#continue
-					#if not InputMap.event_is_action(old_key_event, action_name, true):
-						#continue
-					#print("Removing orphan event from %s action" % action_name)
-					#InputMap.action_erase_event(action_name, old_key_event)
-			#else:
-				#InputMap.action_erase_event(KEYBIND_PREFIX + new_action, old_key_event)
-
-		#print_log("Adding event for the action name with the correct key.")
-
-		# We only want to create a new key event if it wasn't reset.
-		#var new_key_event = _create_key_event(new_item)
-		#if new_key_event != null and new_action != "":
-			#InputMap.action_add_event(KEYBIND_PREFIX + new_action, new_key_event)
-
-#func _input(event : InputEvent) -> void:
-	#for action in InputMap.get_actions():
-		#if event.is_action_pressed(action, false, true):
-			#send_global_mod_message("KeybindsActionPressed", 
-			#{
-				#"action": action.replace(KEYBIND_PREFIX, ""),
-				 #"event": event
-			#})
-	## This is one way to do actions. The5 other is with global mod data.
-	##if InputMap.has_action(KEYBIND_PREFIX + "ping") \
-		##and event.is_action_pressed(KEYBIND_PREFIX + "ping", false, true):
-		##print_log("Input map pong!")
-		##set_status("Pong!")
-
-	# The alternative approach is commented below.
-
+	elif new_item["keybind_name"] != old_item["keybind_name"] \
+		or new_item["intensity"] != old_item["intensity"] \
+		or new_item["slew_time"] != old_item["slew_time"]:
+		print_log("New item data is not the same as the old.")
 
 func _get_key_action_by_item(item : Dictionary):
 	for i in key_actions:
