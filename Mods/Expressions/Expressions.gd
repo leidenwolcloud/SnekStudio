@@ -13,6 +13,9 @@ class_name Expressions
 var key_actions : Array = []
 var settings_ui : ExpressionSettingUI
 var KEYBIND_PREFIX : String = "kb_"
+var expression_prev: Dictionary
+var expression_curr: Dictionary
+var expression_next: Dictionary
 
 func _ready() -> void:
 	# Alert all mods that rely on keybinds of the prefix we are using.
@@ -60,9 +63,11 @@ func on_ui_change_item(action : int, item : Dictionary, old_item : Dictionary):
 		if action == ExpressionsChangeAction.BLENDSHAPE_NAME \
 		   and item["blendshape_name"] != "" \
 		   and _get_key_action_by_item(item) == null:
+			print_log("BLENDSHAPE_NAME")
 			key_actions.append(item)
 			_create_action(item)
 		else:
+			print_log("KEY_BIND")
 			_update_action(item, old_item)
 	if action == ExpressionsChangeAction.DELETE:
 		# Remove the existing item from our key_actions.
@@ -84,15 +89,15 @@ func on_ui_change_item(action : int, item : Dictionary, old_item : Dictionary):
 	save_settings()
 
 func _create_key_event(item : Dictionary) -> InputEventKey:
-	var key : int = item["key"]
+	# var key : int = item["key"]
 	var alt_pressed : bool = item.get("modifier_alt", false)
 	var ctrl_pressed : bool = item.get("modifier_ctrl", false)
 	var meta_pressed : bool = item.get("modifier_meta", false)
 	var shift_pressed : bool = item.get("modifier_shift", false)
-	if key == -1:
-		return null
+	# if key == -1:
+		# return null
 	var new_key_event = InputEventKey.new()
-	new_key_event.physical_keycode = key
+	# new_key_event.physical_keycode = key
 	new_key_event.alt_pressed = alt_pressed
 	new_key_event.ctrl_pressed = ctrl_pressed
 	new_key_event.meta_pressed = meta_pressed
@@ -100,22 +105,22 @@ func _create_key_event(item : Dictionary) -> InputEventKey:
 	return new_key_event
 
 func _create_action(item : Dictionary) -> void:
-	var action = item["blendshape_name"]
-
+	var blendshape_name = item["blendshape_name"]
+	var keybind_name = item["keybind_name"]
 	# Do not create empty.
-	if action == "":
+	if keybind_name == "":
 		return
 
-	print_log("Creating new action and associated event %s" % action)
+	print_log("Creating new action and associated event %s" % keybind_name)
 	var key_event = _create_key_event(item)
 
-	if not InputMap.has_action(KEYBIND_PREFIX + action):
-		InputMap.add_action(KEYBIND_PREFIX + action)
+	if not InputMap.has_action(KEYBIND_PREFIX + keybind_name):
+		InputMap.add_action(KEYBIND_PREFIX + keybind_name)
 
 	# Always add the event to the action, if there is no action it was made.
 	# existing events for the action have been cleared.	
 	if key_event != null:
-		InputMap.action_add_event(KEYBIND_PREFIX + action, key_event)
+		InputMap.action_add_event(KEYBIND_PREFIX + keybind_name, key_event)
 
 func _update_action(new_item : Dictionary, old_item : Dictionary) -> void:
 	var new_action = new_item["blendshape_name"]
@@ -134,7 +139,7 @@ func _update_action(new_item : Dictionary, old_item : Dictionary) -> void:
 		 or new_item["blendshape_name"] != old_item["blendshape_name"] \
 		 or new_item["keybind_name"] != old_item["keybind_name"]:
 		print_log("New item key is not the same as the old key.")
-		if old_key != -1:
+		if old_key != "":
 			print_log("Old item key is not unassigned. Removing the old item key event.")
 			var old_key_event = _create_key_event(old_item)
 			if new_action == "":
@@ -172,9 +177,7 @@ func _update_action(new_item : Dictionary, old_item : Dictionary) -> void:
 		##set_status("Pong!")
 
 	# The alternative approach is commented below.
-func _handle_global_mod_message(key : String, values : Dictionary):
-	if key == "KeybindsActionPressed":
-		print_log(values["action"])
+
 
 func _get_key_action_by_item(item : Dictionary):
 	for i in key_actions:
@@ -204,9 +207,12 @@ func _add_actions() -> void:
 func _create_initial_actions() -> void:
 	key_actions = [
 		{ 
-			"key": KEY_P,
+			"key": KEY_P, # TODO: remove this, somehow
 			"blendshape_name": "surprised",
-			"keybind_name": ""
+			"keybind_name": "surprised",
+			"slew_time": 1.0,
+			"intensity": 1.0,
+			"active": false
 		}
 	]
 
@@ -242,3 +248,22 @@ func load_after(_settings_old : Dictionary, _settings_new : Dictionary):
 		_add_actions()
 	print_log("Setting up UI...")
 	settings_ui.set_initial_key_actions(key_actions)	
+
+# Receives keybind messages to set current and next blendshape
+func _handle_global_mod_message(key : String, values : Dictionary):
+	if key == "KeybindsActionPressed":
+		print_log(key_actions)
+		for item in key_actions:
+			if item["keybind_name"] == values["action"]:
+				item["active"] = not item["active"]
+				expression_next = item
+				break
+
+# Apply slewing and stuff
+func _process(delta: float) -> void:
+	# TODO: State machine for blendshapes goes here. Godspeed
+	# force-set expression_prev blendshape to 0
+	# interpolate between expression_curr and expression_next blendshapes
+	# if "active" is false, blendshape target is 0, otherwise it's the intensity value
+	# possible special handling if expression_curr and expression_next control the same blendshape
+	pass

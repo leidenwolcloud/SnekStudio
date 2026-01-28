@@ -37,7 +37,10 @@ func _set_key_bind_display(item : Dictionary):
 func blank_item() -> void:
 	ui_item = {
 		"blendshape_name": "",
-		"keybind_name": ""
+		"keybind_name": "",
+		"slew_time": 1.0,
+		"intensity": 1.0,
+		"active": false
 	}
 
 func _on_blendshape_name_txt_text_changed(new_text : String) -> void:
@@ -47,32 +50,12 @@ func _on_blendshape_name_txt_text_changed(new_text : String) -> void:
 	
 func _on_keybind_name_display_text_changed(new_text : String) -> void:
 	old_item = ui_item.duplicate()
-	ui_item["blendshape_name"] = new_text
+	ui_item["keybind_name"] = new_text
 	emit_signal("on_change_item", ExpressionsChangeAction.KEY_BIND, ui_item, old_item)
 
 func _on_delete_btn_pressed() -> void:
 	emit_signal("on_change_item", ExpressionsChangeAction.DELETE, ui_item, {})
 	queue_free()
-	
-#func _input(event : InputEvent):
-	#if currently_setting and event is InputEventKey:
-		#var key_event : InputEventKey = event
-		#if key_event.physical_keycode == KEY_CTRL \
-			#or key_event.physical_keycode == KEY_ALT \
-			#or key_event.physical_keycode == KEY_SHIFT \
-			#or key_event.physical_keycode == KEY_META:
-			## Default, probably only has modifier applied.
-			#return
-		#currently_setting = false
-		#old_item = ui_item.duplicate()
-		#ui_item["key"] = event.physical_keycode
-		#ui_item["modifier_alt"] = event.alt_pressed
-		#ui_item["modifier_ctrl"] = event.ctrl_pressed
-		#ui_item["modifier_meta"] = event.meta_pressed
-		#ui_item["modifier_shift"] = event.shift_pressed
-		#%SetBtn.text = "Set"
-		#emit_signal("on_change_item", ExpressionsChangeAction.KEY_BIND, ui_item, old_item)
-		#_set_key_bind_display(ui_item)
 
 func _on_slew_time_slider_value_changed(value: float) -> void:
 	%SlewTimeLabel.text = str(value)
