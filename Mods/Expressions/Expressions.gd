@@ -113,18 +113,23 @@ func _update_action(new_item : Dictionary, old_item : Dictionary) -> void:
 		or new_item["intensity"] != old_item["intensity"] \
 		or new_item["slew_time"] != old_item["slew_time"]:
 		print_log("New item data is not the same as the old.")
+		var key_action_found = _get_key_action_by_item(new_item)
+		if not key_action_found.is_empty():
+			_update_key_action_by_item(key_action_found, new_item)
 
-func _get_key_action_by_item(item : Dictionary):
+func _get_key_action_by_item(item : Dictionary) -> Dictionary:
 	for i in key_actions:
-		if i["keybind_name"] == item["keybind_name"] and i["blendshape_name"] == item["blendshape_name"]:
+		if i["blendshape_name"] == item["blendshape_name"]:
 			return i
-	return null
+	return {}
 
 func _update_key_action_by_item(item : Dictionary, new_item : Dictionary) -> bool:
 	for i in key_actions:
-		if i["keybind_name"] == item["keybind_name"] and i["blendshape_name"] == item["blendshape_name"]:
+		if i["blendshape_name"] == item["blendshape_name"]:
 			i["keybind_name"] = new_item["keybind_name"]
 			i["blendshape_name"] = new_item["blendshape_name"]
+			i["intensity"] = new_item["intensity"]
+			i["slew_time"] = new_item["slew_time"]
 			return true
 	return false
 
