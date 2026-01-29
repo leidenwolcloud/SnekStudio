@@ -13,9 +13,12 @@ class_name Expressions
 var key_actions : Array = []
 var settings_ui : ExpressionSettingUI
 var KEYBIND_PREFIX : String = "kb_"
+var expression_active_flag: bool = false
 var expression_prev: Dictionary
 var expression_curr: Dictionary
 var expression_next: Dictionary
+
+var blendshape_value : float = 0.0
 
 func _ready() -> void:
 	remove_child(panel)
@@ -47,6 +50,9 @@ func on_ui_change_item(action : int, item : Dictionary, old_item : Dictionary):
 	if action != ExpressionsChangeAction.DELETE:
 		# Updates should be fine as there is a reference to the item.
 		# We only have to check if there isn't an item, then add an item.
+		print(action)
+		print(item)
+		print(key_actions)
 		if action == ExpressionsChangeAction.BLENDSHAPE_NAME \
 		   and item["blendshape_name"] != "" \
 		   and _get_key_action_by_item(item) == null:
@@ -65,14 +71,14 @@ func on_ui_change_item(action : int, item : Dictionary, old_item : Dictionary):
 		if action_event_count <= 1:
 			# Delete the entire action.
 			print_log("Deleting the entire action for %s" % item["blendshape_name"])
-			InputMap.erase_action(KEYBIND_PREFIX + item["blendshape_name"])
+			#InputMap.erase_action(KEYBIND_PREFIX + item["blendshape_name"])
 		else:
 			# Delete just our event.
 			var key_event = _create_key_event(item)
 			if key_event != null:
 				print_log("Deleting just our event for %s" % item["blendshape_name"])
-				InputMap.action_erase_event(KEYBIND_PREFIX + item["blendshape_name"], key_event)
-
+				#InputMap.action_erase_event(KEYBIND_PREFIX + item["blendshape_name"], key_event)
+	print(key_actions)
 	save_settings()
 
 func _create_key_event(item : Dictionary) -> InputEventKey:
@@ -117,11 +123,11 @@ func _update_action(new_item : Dictionary, old_item : Dictionary) -> void:
 		if not key_action_found.is_empty():
 			_update_key_action_by_item(key_action_found, new_item)
 
-func _get_key_action_by_item(item : Dictionary) -> Dictionary:
+func _get_key_action_by_item(item : Dictionary):
 	for i in key_actions:
 		if i["blendshape_name"] == item["blendshape_name"]:
 			return i
-	return {}
+	return null
 
 func _update_key_action_by_item(item : Dictionary, new_item : Dictionary) -> bool:
 	for i in key_actions:
@@ -152,6 +158,7 @@ func _create_initial_actions() -> void:
 			"keybind_name": "surprised",
 			"slew_time": 1.0,
 			"intensity": 1.0,
+			#"blendshape_value": 0.0,
 			"active": false
 		}
 	]
@@ -192,18 +199,51 @@ func load_after(_settings_old : Dictionary, _settings_new : Dictionary):
 # Receives keybind messages to set current and next blendshape
 func _handle_global_mod_message(key : String, values : Dictionary):
 	if key == "KeybindsActionPressed":
-		print_log(key_actions)
+		# print_log(key_actions)
 		for item in key_actions:
 			if item["keybind_name"] == values["action"]:
 				item["active"] = not item["active"]
-				expression_next = item
-				break
+				expression_curr = item
+				print_log(["setting active expression to ",str(expression_curr)])
+				
 
 # Apply slewing and stuff
 func _process(delta: float) -> void:
+	var blend_shape_dict : Dictionary = get_global_mod_data("BlendShapes")
 	# TODO: State machine for blendshapes goes here. Godspeed
 	# force-set expression_prev blendshape to 0
 	# interpolate between expression_curr and expression_next blendshapes
 	# if "active" is false, blendshape target is 0, otherwise it's the intensity value
 	# possible special handling if expression_curr and expression_next control the same blendshape
-	pass
+	#var blendshape_prev = expression_prev["blendshape_name"]
+	#var blendshape_curr = expression_curr["blendshape_name"]
+	#var blendshape_next = expression_next["blendshape_name"]
+	
+	if not expression_curr.is_empty():
+		#print_log(str(expression_curr))
+		#blendshape_value = blend_shape_dict[expression_curr["blendshape_name"]]
+		#var new_blendshape_value : float
+		#print(blendshape_value)
+		#print_log(["current expression is ",str(expression_curr)])
+		if expression_curr["active"]:
+			#print("active")
+			blendshape_value = blendshape_value + (expression_curr["intensity"] / expression_curr["slew_time"])
+			if blendshape_value > expression_curr["intensity"]:
+				blendshape_value = expression_curr["intensity"]
+		else:
+			#print("inactive")
+			blendshape_value = blendshape_value - (expression_curr["intensity"] / expression_curr["slew_time"])
+			if blendshape_value < 0.0:
+				blendshape_value = 0.0
+		# print_log(["blendshape value is ", str(blendshape_value)])
+		blend_shape_dict[expression_curr["blendshape_name"]] = blendshape_value
+		#expression_curr["blendshape_value"] = blendshape_value
+		print(blendshape_value)
+			
+	#var blendshape_curr_start_val : float
+	#var blendshape_curr_end_val : float
+	#
+	#var blendshape_next_start_val : float
+	#var blendshape_next_end_val : float
+	
+	# blend_shape_dict[blendshape_prev] = 0.0
