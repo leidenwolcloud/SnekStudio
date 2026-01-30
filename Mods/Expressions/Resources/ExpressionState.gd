@@ -1,0 +1,7 @@
+class_name ExpressionState
+enum {
+	IDLE = 1,
+	TRANSITION_TO_EXPRESSION = 2,
+	TRANSITION_TO_NEUTRAL = 3,
+	TRANSITION_BETWEEN = 4
+}

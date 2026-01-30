@@ -238,7 +238,7 @@ func _process(delta: float) -> void:
 		# print_log(["blendshape value is ", str(blendshape_value)])
 		blend_shape_dict[expression_curr["blendshape_name"]] = blendshape_value
 		#expression_curr["blendshape_value"] = blendshape_value
-		print(blendshape_value)
+		# print(blendshape_value)
 			
 	#var blendshape_curr_start_val : float
 	#var blendshape_curr_end_val : float
