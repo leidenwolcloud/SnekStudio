@@ -16,7 +16,7 @@ var hips_vertical_blend_speed : float = 6.0
 
 # FIXME: This should be a dictionary.
 var _ikchains_dict : Dictionary = {
-	"arm_left" : null,
+	# "arm_left" : null,
 	"arm_right" : null,
 	"spine" : null
 }
@@ -246,8 +246,9 @@ func _update_local_trackers() -> void:
 		"pinky_finger_dip",
 		"pinky_finger_tip",
 	]
-
-	for side : String in [ "left", "right" ]:
+	# TODO: can we add a setting to only track one hand?
+	#for side : String in [ "left", "right" ]:
+	for side : String in [ "right" ]:
 
 		var tracker : Node3D;
 		if side == "left":
@@ -322,7 +323,8 @@ func _process(delta : float) -> void:
 	var z_pole_dist = 10.0
 	var y_pole_dist = 5.0
 
-	for chain_name in ["arm_left", "arm_right"]:
+	#for chain_name in ["arm_left", "arm_right"]:
+	for chain_name in ["arm_right"]:
 
 		var tracker_to_use = $Hand_Left
 		var compensation_alpha_scale = 1.0
@@ -393,7 +395,7 @@ func _process(delta : float) -> void:
 	# FIXME: Fix this comment.
 	# Do hand stuff.
 	if do_hands:
-		update_hand(hand_landmarks_left, "Left")
+		#update_hand(hand_landmarks_left, "Left")
 		update_hand(hand_landmarks_right, "Right")
 
 	# Solve spine.
@@ -410,7 +412,8 @@ func _process(delta : float) -> void:
 	handle_lean(skel, lean_amount * lean_scale)
 
 	# Solve arms.
-	for chain_name in ["arm_left", "arm_right"]:
+	#for chain_name in ["arm_left", "arm_right"]:
+	for chain_name in ["arm_right"]:	
 		_ikchains_dict[chain_name].do_ik_chain()
 
 
@@ -453,7 +456,8 @@ func _setup_ik_chains():
 	var hand_tracker_left : Node3D = $Hand_Left
 	var hand_tracker_right : Node3D = $Hand_Right
 
-	for side in [ "Left", "Right" ]:
+	for side in [ "Right" ]:
+	#for side in [ "Left", "Right" ]:
 
 		var chain_hand = PoseIK_IKChain.new()
 		chain_hand.skeleton = get_skeleton()
@@ -481,7 +485,8 @@ func _setup_ik_chains():
 
 func _reset_hand_landmarks():
 
-	for tracker : Node3D in [ $Hand_Left, $Hand_Right ]:
+	for tracker : Node3D in [ $Hand_Right ]:
+	#for tracker : Node3D in [ $Hand_Left, $Hand_Right ]:
 		
 		# Make sure we have all the children.
 		while tracker.get_child_count() < 21:
@@ -504,7 +509,7 @@ func _reset_hand_landmarks():
 			else:
 				finger_tracker.mesh = null
 
-	assert(len(hand_landmarks_left) == 21)
+#	assert(len(hand_landmarks_left) == 21)
 	assert(len(hand_landmarks_right) == 21)
 
 # This function will rotate a bone in the global (skeleton object) coordiate
