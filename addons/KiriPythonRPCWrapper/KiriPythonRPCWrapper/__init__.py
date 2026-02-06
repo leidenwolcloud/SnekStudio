@@ -152,6 +152,7 @@ try:
 
             # Call the dang function.
             try:
+                print("RPC wrapper is calling ", str(func), "(", str(*func_args), ")!")
                 ret = func(*func_args)
             except Exception as e:
                 send_error_response(

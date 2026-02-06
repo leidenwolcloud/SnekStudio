@@ -263,7 +263,7 @@ class MediaPipeTracker:
             self,
             result: mediapipe.tasks.vision.HandLandmarkerResult,
             output_image: mediapipe.Image, timestamp_ms: int):
-
+        print("Processing hand landmarker results")
         self._last_hand_result_timestamp = timestamp_ms
         # self._write_log("HAND RESULTS: ", timestamp_ms)
         # return
