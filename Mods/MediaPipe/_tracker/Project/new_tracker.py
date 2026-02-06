@@ -176,9 +176,12 @@ class MediaPipeTracker:
 
             # FIXME: Make these adjustable.
             # Were working in the 4.1 version.
-            min_hand_detection_confidence = 0.75,
-            min_tracking_confidence = 0.75,
-            min_hand_presence_confidence = 0.9,
+            #min_hand_detection_confidence = 0.75,
+            #min_tracking_confidence = 0.75,
+            #min_hand_presence_confidence = 0.9,
+            min_hand_detection_confidence = 0.5,
+            min_tracking_confidence = 0.5,
+            min_hand_presence_confidence = 0.5,
 
             result_callback = self._handle_result_hands)
 
@@ -273,7 +276,7 @@ class MediaPipeTracker:
         else:
             self.time_since_hand_count_changed += 1.0
         if self.time_since_hand_count_changed < self.time_since_hand_count_changed_threshold:
-            self._write_log("Waiting on hand count change.")
+            self._write_log("Waiting on hand count change.") # FIXME: the program can freeze here when exiting
             return
 
         # Default confidence to zero in case we don't see any hand
