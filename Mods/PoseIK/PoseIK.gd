@@ -16,7 +16,7 @@ var hips_vertical_blend_speed : float = 6.0
 
 # FIXME: This should be a dictionary.
 var _ikchains_dict : Dictionary = {
-	# "arm_left" : null,
+	"arm_left" : null,
 	"arm_right" : null,
 	"spine" : null
 }
@@ -485,8 +485,8 @@ func _setup_ik_chains():
 
 func _reset_hand_landmarks():
 
-	for tracker : Node3D in [ $Hand_Right ]:
-	#for tracker : Node3D in [ $Hand_Left, $Hand_Right ]:
+	#for tracker : Node3D in [ $Hand_Right ]:
+	for tracker : Node3D in [ $Hand_Left, $Hand_Right ]:
 		
 		# Make sure we have all the children.
 		while tracker.get_child_count() < 21:
@@ -509,7 +509,7 @@ func _reset_hand_landmarks():
 			else:
 				finger_tracker.mesh = null
 
-#	assert(len(hand_landmarks_left) == 21)
+	assert(len(hand_landmarks_left) == 21)
 	assert(len(hand_landmarks_right) == 21)
 
 # This function will rotate a bone in the global (skeleton object) coordiate
