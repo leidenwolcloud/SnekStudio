@@ -96,9 +96,10 @@ class MediaPipeTracker:
         # the number of hands has changed.
         self.time_since_hand_count_changed_threshold = 1.0
 
-        self.hand_detection_confidence = 0.5
-        self.hand_tracking_confidence = 0.5
-        self.hand_presence_confidence = 0.5
+        # Were working in the 4.1 version.
+        self.hand_detection_confidence = 0.75
+        self.hand_tracking_confidence = 0.75
+        self.hand_presence_confidence = 0.9
 
         self.hand_position_scale = numpy.array([7.0, 7.0, 3.5])
         self.hand_position_offset = numpy.array([0.0, -0.14, 0.0])
@@ -178,11 +179,14 @@ class MediaPipeTracker:
             running_mode = VisionRunningMode.LIVE_STREAM,
             num_hands = 2,
 
+<<<<<<< HEAD
             # FIXME: Make these adjustable.
             # Were working in the 4.1 version.
             #min_hand_detection_confidence = 0.75,
             #min_tracking_confidence = 0.75,
             #min_hand_presence_confidence = 0.9,
+=======
+>>>>>>> fix_freeze_on_exit_2
             min_hand_detection_confidence = self.hand_detection_confidence,
             min_tracking_confidence = self.hand_tracking_confidence,
             min_hand_presence_confidence = self.hand_presence_confidence,

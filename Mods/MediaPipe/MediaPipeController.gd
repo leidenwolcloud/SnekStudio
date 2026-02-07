@@ -63,9 +63,11 @@ var head_position_smoothing : float = 2.0
 
 var hand_confidence_time_threshold = 1.0
 var hand_count_change_time_threshold = 1.0
-var min_hand_detection_confidence = 0.5
-var min_hand_tracking_confidence = 0.5
-var min_hand_presence_confidence = 0.5
+
+var min_hand_detection_confidence = 0.75
+var min_hand_tracking_confidence = 0.75
+var min_hand_presence_confidence = 0.9
+
 
 var hand_rotation_smoothing : float = 2.0
 var hand_position_smoothing : float = 4.0
@@ -432,8 +434,7 @@ func _start_tracker():
 
 func _stop_tracker():
 
-	tracker_python_process.call_rpc_sync(
-		"stop_tracker", [])
+	tracker_python_process.stop_process()
 
 	set_status("Stopped")
 
