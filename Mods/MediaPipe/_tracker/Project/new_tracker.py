@@ -179,14 +179,6 @@ class MediaPipeTracker:
             running_mode = VisionRunningMode.LIVE_STREAM,
             num_hands = 2,
 
-<<<<<<< HEAD
-            # FIXME: Make these adjustable.
-            # Were working in the 4.1 version.
-            #min_hand_detection_confidence = 0.75,
-            #min_tracking_confidence = 0.75,
-            #min_hand_presence_confidence = 0.9,
-=======
->>>>>>> fix_freeze_on_exit_2
             min_hand_detection_confidence = self.hand_detection_confidence,
             min_tracking_confidence = self.hand_tracking_confidence,
             min_hand_presence_confidence = self.hand_presence_confidence,
