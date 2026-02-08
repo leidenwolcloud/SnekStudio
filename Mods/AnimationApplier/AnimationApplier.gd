@@ -43,13 +43,14 @@ static func apply_animations(model, shape_dict):
 	if anim_player:
 
 		# Find all the "rest" values to blend with.
-		var rest_anim : Animation = anim_player.get_animation("RESET")
-		if rest_anim:
-			for track_index in range(0, rest_anim.get_track_count()):
-				if rest_anim.track_get_type(track_index) == Animation.TYPE_VALUE:
-					var track_path : NodePath = rest_anim.track_get_path(track_index)
-					value_rest_values[track_path] = \
-						rest_anim.track_get_key_value(track_index, 0)
+		if anim_player.has_animation("RESET"):
+			var rest_anim : Animation = anim_player.get_animation("RESET")
+			if rest_anim:
+				for track_index in range(0, rest_anim.get_track_count()):
+					if rest_anim.track_get_type(track_index) == Animation.TYPE_VALUE:
+						var track_path : NodePath = rest_anim.track_get_path(track_index)
+						value_rest_values[track_path] = \
+							rest_anim.track_get_key_value(track_index, 0)
 
 		for anim_name in combined_blend_shape_last_values.keys():
 
