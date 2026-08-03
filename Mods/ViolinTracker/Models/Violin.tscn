@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://ctty3v51ncoej"]
+
+[ext_resource type="PackedScene" uid="uid://ccib6e0u0n08i" path="res://Mods/ViolinTracker/Models/violin_body_v01.glb" id="1_6esdm"]
+
+[node name="Violin" type="Node3D" unique_id=190780059]
+
+[node name="ViolinModel" parent="." unique_id=2091784681 instance=ExtResource("1_6esdm")]

@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://5xwj7v58t8kf"]
+
+[ext_resource type="Script" uid="uid://d06vrbsbxdy1t" path="res://Mods/ViolinTracker/ViolinTracker.gd" id="1_cmxbk"]
+[ext_resource type="PackedScene" uid="uid://ctty3v51ncoej" path="res://Mods/ViolinTracker/Models/Violin.tscn" id="2_qa1vx"]
+[ext_resource type="PackedScene" uid="uid://lqmhah1x0fty" path="res://Mods/ViolinTracker/Models/ViolinBow.tscn" id="3_b76k2"]
+
+[node name="ViolinTracker" type="Node3D" unique_id=163521414]
+script = ExtResource("1_cmxbk")
+
+[node name="Violin" parent="." unique_id=190780059 instance=ExtResource("2_qa1vx")]
+script = ExtResource("1_cmxbk")
+
+[node name="ViolinBow" parent="." unique_id=1853572523 instance=ExtResource("3_b76k2")]
