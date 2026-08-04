@@ -5,3 +5,4 @@
 [node name="ViolinBow" type="Node3D" unique_id=1853572523]
 
 [node name="BowModel" parent="." unique_id=1943508211 instance=ExtResource("1_n677c")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
