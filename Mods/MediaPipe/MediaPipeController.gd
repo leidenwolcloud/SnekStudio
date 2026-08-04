@@ -631,7 +631,7 @@ func _stop_process():
 	tracker_python_process.stop_process()
 
 func _process(delta):
-
+	# TODO: can RPC packet processing be decoupled from the framerate?
 	# Process RPC IO.
 	if tracker_python_process:
 		tracker_python_process.poll()

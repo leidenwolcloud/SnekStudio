@@ -2,7 +2,7 @@ extends Mod_Base
 
 var _bow_offset_x = 0
 var _bow_offset_y = 0
-var _bow_offset_z = 0.1
+var _bow_offset_z = 0.15
 var _violin_offset_x = 0
 var _violin_offset_y = -0.3
 var _violin_offset_z = 0
@@ -28,13 +28,7 @@ var lhand_position = Vector3()
 func _ready() -> void:
 	# TODO: set position of violin relative to model bones,
 	# 	set orientation according to hand position
-	$Violin.transform.origin.x = head_position.x + _violin_offset_x
-	$Violin.transform.origin.y = head_position.y + _violin_offset_y
-	$Violin.transform.origin.z = head_position.z + _violin_offset_z
-	
-	$ViolinBow.transform.origin.x = rhand_position.x + _bow_offset_x
-	$ViolinBow.transform.origin.y = rhand_position.y + _bow_offset_y
-	$ViolinBow.transform.origin.z = rhand_position.z + _bow_offset_z
+	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:

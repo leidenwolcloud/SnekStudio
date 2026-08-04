@@ -124,8 +124,10 @@ class MediaPipeTracker:
 
             # Enforce low-res capture for performance reasons.
             try:
+                # Best to use 16:9 (or similiar) aspect ratio to avoid cropping (which would limit hand detection area)
                 self.video_device_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-                self.video_device_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+                self.video_device_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 360)
+                self.video_device_capture.set(cv2.CAP_PROP_FPS, 60)
             except Exception as e:
                 # Failed? Whatever. Just use the resolution it's stuck with.
                 pass
@@ -170,15 +172,15 @@ class MediaPipeTracker:
         #     result_callback = self._handle_result_pose)
 
         options_hands = mediapipe.tasks.vision.HandLandmarkerOptions(
-            base_options = BaseOptions(model_asset_path = hand_landmarker_path),
+            base_options = BaseOptions(model_asset_path = hand_landmarker_path),#, delegate=python.BaseOptions.Delegate.GPU), # FIXME: GPU delegate runs slower than CPU on Bazzite?
             running_mode = VisionRunningMode.LIVE_STREAM,
             num_hands = 2,
 
             # FIXME: Make these adjustable.
             # Were working in the 4.1 version.
-            min_hand_detection_confidence = 0.75,
-            min_tracking_confidence = 0.75,
-            min_hand_presence_confidence = 0.9,
+            min_hand_detection_confidence = 0.15,
+            min_tracking_confidence = 0.15,
+            min_hand_presence_confidence = 0.15,
 
             result_callback = self._handle_result_hands)
 
