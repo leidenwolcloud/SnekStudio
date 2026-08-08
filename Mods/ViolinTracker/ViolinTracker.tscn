@@ -1,17 +1,16 @@
 [gd_scene format=3 uid="uid://5xwj7v58t8kf"]
 
 [ext_resource type="Script" uid="uid://d06vrbsbxdy1t" path="res://Mods/ViolinTracker/ViolinTracker.gd" id="1_cmxbk"]
-[ext_resource type="PackedScene" uid="uid://b77hvohxc3htf" path="res://Mods/ViolinTracker/Models/violin_body_v_01.tscn" id="2_qa1vx"]
 [ext_resource type="PackedScene" uid="uid://dpowvry3vd4i5" path="res://Mods/ViolinTracker/Models/violin_string_v_01.tscn" id="3_b76k2"]
+[ext_resource type="PackedScene" uid="uid://bvia3jmyars2n" path="res://Mods/ViolinTracker/Models/wolcloud_violin_prop_v3.tscn" id="3_qa1vx"]
 
 [node name="ViolinTracker" type="Node3D" unique_id=163521414]
 script = ExtResource("1_cmxbk")
 
-[node name="Violin" parent="." unique_id=2091784681 instance=ExtResource("2_qa1vx")]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, -0.5791558)
+[node name="ViolinBow" parent="." unique_id=1943508211 instance=ExtResource("3_b76k2")]
+transform = Transform3D(-0.5, 0, 7.54979e-08, 0, 0.5, 0, -7.54979e-08, 0, -0.5, 0.03758657, -0.06934309, 1.0210085)
+
+[node name="Violin" parent="." unique_id=1048160122 instance=ExtResource("3_qa1vx")]
 
 [node name="ContactPoint" type="Node3D" parent="Violin" unique_id=60435875]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4694506, 0.25771376, -0.01526165)
-
-[node name="ViolinBow" parent="." unique_id=1943508211 instance=ExtResource("3_b76k2")]
-transform = Transform3D(-0.5, 0, -4.371139e-08, 0, 0.5, 0, 4.371139e-08, 0, -0.5, 0, 0, 1.2722642)
+transform = Transform3D(0.033978313, 9.05127e-10, 0.0012144579, -5.820766e-11, 0.033999998, -1.8817445e-09, -0.0012144581, 9.166464e-11, 0.03397831, 5.369386, 2.2465472, 0.43461016)

@@ -65,7 +65,7 @@ transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
 [node name="Box005" type="Node3D" parent="Sketchfab_model/Collada visual scene group" unique_id=1583168956]
 
 [node name="defaultMaterial" type="MeshInstance3D" parent="Sketchfab_model/Collada visual scene group/Box005" unique_id=1007871788]
-transform = Transform3D(0.06698732, 0.9659258, 0.2500001, -0.9659258, -4.503361e-08, 0.2588191, 0.25000006, -0.25881913, 0.93301266, 0.11887065, 0.8449068, 0.14450735)
+transform = Transform3D(0.06698741, -0.9659258, 0.25, 0.9659258, 1.299219e-07, -0.2588191, 0.25000003, 0.2588191, 0.93301266, 0.07859398, -0.72970843, 0.15529944)
 mesh = SubResource("ArrayMesh_1bkse")
 skeleton = NodePath("")
 

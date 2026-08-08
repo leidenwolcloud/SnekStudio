@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://cib4t271pduld"
+path="res://.godot/imported/wolcloud_violin_prop_v2.obj-ba35487c682abbb82197a78442d3b71e.mesh"
+
+[deps]
+
+files=["res://.godot/imported/wolcloud_violin_prop_v2.obj-ba35487c682abbb82197a78442d3b71e.mesh"]
+
+source_file="res://Mods/ViolinTracker/Models/wolcloud_violin_prop_v2.obj"
+dest_files=["res://.godot/imported/wolcloud_violin_prop_v2.obj-ba35487c682abbb82197a78442d3b71e.mesh", "res://.godot/imported/wolcloud_violin_prop_v2.obj-ba35487c682abbb82197a78442d3b71e.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

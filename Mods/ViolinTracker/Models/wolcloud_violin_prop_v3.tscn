@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://bvia3jmyars2n"]
+
+[ext_resource type="PackedScene" uid="uid://cqapsloaoyrah" path="res://Mods/ViolinTracker/Models/wolcloud_violin_prop_v2.glb" id="1_p4g52"]
+
+[node name="Violin" type="Node3D" unique_id=1048160122]
+
+[node name="wolcloud_violin_prop_v2" parent="." unique_id=981330168 instance=ExtResource("1_p4g52")]
+transform = Transform3D(-0.018010834, -4.0837222e-11, -0.99983776, -0.40207434, 0.91557837, 0.0072428687, 0.9154298, 0.40213954, -0.01649033, 10.303016, 0.44121265, 0.43191272)
