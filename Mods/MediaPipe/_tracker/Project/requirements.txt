@@ -1,4 +1,4 @@
-mediapipe==0.10.14
+mediapipe==1.0.0
 psutil==6.0.0
 cv2-enumerate-cameras==1.1.18.2
 numpy==1.26.0

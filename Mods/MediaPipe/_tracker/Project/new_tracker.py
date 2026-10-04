@@ -57,6 +57,7 @@ class MediaPipeTracker:
         self.landmarker = None
         # self.landmarker_pose = None
         self.landmarker_hands = None
+        self.landmarker_holistic = None
 
         last_hand_data_template = {
             "position" : numpy.array([0.0, 0.0, 0.0]),
@@ -145,55 +146,71 @@ class MediaPipeTracker:
     def _init_mediapipe(self):
 
         BaseOptions = mediapipe.tasks.BaseOptions
-        FaceLandmarker = mediapipe.tasks.vision.FaceLandmarker
-        FaceLandmarkerOptions = mediapipe.tasks.vision.FaceLandmarkerOptions
-        FaceLandmarkerResult = mediapipe.tasks.vision.FaceLandmarkerResult
-        HandLandmarkerOptions = mediapipe.tasks.vision.HandLandmarkerOptions
-        HandLandmarkerResult = mediapipe.tasks.vision.HandLandmarkerResult
+        HolisticLandmarker = mediapipe.tasks.vision.HolisticLandmarker
+        HolisticLandmarkerOptions = mediapipe.tasks.vision.HolisticLandmarkerOptions
+
+
+        # FaceLandmarker = mediapipe.tasks.vision.FaceLandmarker
+        # FaceLandmarkerOptions = mediapipe.tasks.vision.FaceLandmarkerOptions
+        # FaceLandmarkerResult = mediapipe.tasks.vision.FaceLandmarkerResult
+        # HandLandmarkerOptions = mediapipe.tasks.vision.HandLandmarkerOptions
+        # HandLandmarkerResult = mediapipe.tasks.vision.HandLandmarkerResult
         VisionRunningMode = mediapipe.tasks.vision.RunningMode
 
         asset_path = os.path.abspath(os.path.dirname(__file__))
 
-        face_landmarker_path = os.path.join(asset_path, "face_landmarker.task")
-        # FIXME: Last minute breakages.
-        # pose_landmarker_path = os.path.join(asset_path, "pose_landmarker.task")
-        hand_landmarker_path = os.path.join(asset_path, "hand_landmarker.task")
+        holistic_landmarker_path = os.path.join(asset_path, "holistic_landmarker.task")
 
-        options = mediapipe.tasks.vision.FaceLandmarkerOptions(
-            base_options = BaseOptions(model_asset_path = face_landmarker_path),
-            running_mode = VisionRunningMode.LIVE_STREAM,
-            output_face_blendshapes = True,
-            output_facial_transformation_matrixes = True,
-            result_callback = self._handle_result_face)
+        options_holistic = HolisticLandmarkerOptions(
+            base_options=BaseOptions(model_asset_path=holistic_landmarker_path, delegate=python.BaseOptions.Delegate.CPU),
+            running_mode=VisionRunningMode.LIVE_STREAM,
+            min_face_detection_confidence=0.5,
+            min_pose_detection_confidence=0.5,
+            min_hand_landmarks_confidence=0.5,
+            result_callback=self._handle_result_holistic)
 
-        # FIXME: Last minute breakages.
-        # options_pose = mediapipe.tasks.vision.PoseLandmarkerOptions(
-        #     base_options = BaseOptions(model_asset_path = pose_landmarker_path),
+        # face_landmarker_path = os.path.join(asset_path, "face_landmarker.task")
+        # # FIXME: Last minute breakages.
+        # # pose_landmarker_path = os.path.join(asset_path, "pose_landmarker.task")
+        # hand_landmarker_path = os.path.join(asset_path, "hand_landmarker.task")
+        #
+        # options = mediapipe.tasks.vision.FaceLandmarkerOptions(
+        #     base_options = BaseOptions(model_asset_path = face_landmarker_path),
         #     running_mode = VisionRunningMode.LIVE_STREAM,
-        #     output_segmentation_masks = False,
-        #     result_callback = self._handle_result_pose)
-
-        options_hands = mediapipe.tasks.vision.HandLandmarkerOptions(
-            base_options = BaseOptions(model_asset_path = hand_landmarker_path),
-            running_mode = VisionRunningMode.LIVE_STREAM,
-            num_hands = 2,
-
-            min_hand_detection_confidence = self.hand_detection_confidence,
-            min_tracking_confidence = self.hand_tracking_confidence,
-            min_hand_presence_confidence = self.hand_presence_confidence,
-
-            result_callback = self._handle_result_hands)
+        #     output_face_blendshapes = True,
+        #     output_facial_transformation_matrixes = True,
+        #     result_callback = self._handle_result_face)
+        #
+        # # FIXME: Last minute breakages.
+        # # options_pose = mediapipe.tasks.vision.PoseLandmarkerOptions(
+        # #     base_options = BaseOptions(model_asset_path = pose_landmarker_path),
+        # #     running_mode = VisionRunningMode.LIVE_STREAM,
+        # #     output_segmentation_masks = False,
+        # #     result_callback = self._handle_result_pose)
+        #
+        # options_hands = mediapipe.tasks.vision.HandLandmarkerOptions(
+        #     base_options = BaseOptions(model_asset_path = hand_landmarker_path),
+        #     running_mode = VisionRunningMode.LIVE_STREAM,
+        #     num_hands = 2,
+        #
+        #     min_hand_detection_confidence = self.hand_detection_confidence,
+        #     min_tracking_confidence = self.hand_tracking_confidence,
+        #     min_hand_presence_confidence = self.hand_presence_confidence,
+        #
+        #     result_callback = self._handle_result_hands)
 
         self._shutdown_mediapipe()
 
-        self._write_log("Init face landmarker...")
-        self.landmarker = FaceLandmarker.create_from_options(options)
+        # self._write_log("Init face landmarker...")
+        # self.landmarker = FaceLandmarker.create_from_options(options)
+        #
+        # # self._write_log("Init pose landmarker...")
+        # # self.landmarker_pose = vision.PoseLandmarker.create_from_options(options_pose)
+        #
+        # self._write_log("Init hand landmarker...")
+        # self.landmarker_hands = vision.HandLandmarker.create_from_options(options_hands)
 
-        # self._write_log("Init pose landmarker...")
-        # self.landmarker_pose = vision.PoseLandmarker.create_from_options(options_pose)
-
-        self._write_log("Init hand landmarker...")
-        self.landmarker_hands = vision.HandLandmarker.create_from_options(options_hands)
+        self.landmarker_holistic = vision.HolisticLandmarker.create_from_options(options_holistic)
 
         self._write_log("Init done")
 
@@ -223,6 +240,20 @@ class MediaPipeTracker:
         };
         output_data_json = json.dumps(output_data, indent=4).encode("utf-8")
         self._udp_socket.sendto(output_data_json, ("127.0.0.1", self.udp_port_number))
+
+    def _handle_result_holistic(self, result: mediapipe.tasks.vision.HolisticLandmarkerResult, output_image: mediapipe.Image, timestamp_ms: int):
+        # face_landmarks : same type as used in FaceLandmarkerResult
+        # pose_landmarks, pose_world_landmarks,
+        # left_hand_landmarks, left_hand_world_landmarks, right_hand_landmarks, right_hand_world_landmarks,
+        #   - HandLandmarkerResults uses .handedness for left or right, here we get both at once
+        #   - hand_landmarks and world_landmarks are the same type as in HandLandmarkerResults
+        # face_blendshapes,
+        # segmentation_mask
+        self._handle_result_face(result.face_landmarks, output_image, timestamp_ms)
+        self._handle_result_pose(result.pose_landmarks, output_image, timestamp_ms)
+        self._handle_result_hands(result.left_hand_landmarks, output_image, timestamp_ms)
+        self._handle_result_hands(result.right_hand_landmarks, output_image, timestamp_ms)
+
 
     # Create a face landmarker instance with the live stream mode:
     def _handle_result_face(
@@ -569,10 +600,10 @@ class MediaPipeTracker:
                         # deadlock.
                         if need_reset:
                             # Deadlock-avoidance.
-                            self.landmarker._runner.restart()
+                            self.landmarker_holistic._runner.restart()
                             self.frames_queued_face = 0
                         else:
-                            self.landmarker.detect_async(mp_image, this_time)
+                            self.landmarker_holistic.detect_async(mp_image, this_time)
 
                         # Hands
 
@@ -583,27 +614,28 @@ class MediaPipeTracker:
                         #
                         # FIXME: Make this less stupid. Make it make
                         # sense. Then apply it to the face tracking.
-                        hand_landmarker_time_skew = self._last_hand_detect_timestamp - self._last_hand_result_timestamp
-                        if hand_landmarker_time_skew > 50: # FIXME: Make configurable (milliseconds)
-                            self._last_hand_result_timestamp += this_time - self._last_hand_detect_timestamp
-                        else:
-                            # Check to see if we have too many hand tracking
-                            # frames queued.
-                            need_reset = False
-                            with self.frames_queued_mutex:
-                                if self.frames_queued_face > 5:
-                                    need_reset = True
-                                else:
-                                    self.frames_queued_hands += 1
-
-                            # If we do have too many frames queued, just reset
-                            # the tracker to avoid a deadlock.
-                            if need_reset:
-                                self.landmarker_hands._runner.restart()
-                                self.frames_queued_hands = 0
-                            else:
-                                self.landmarker_hands.detect_async(mp_image, this_time)
-                                self._last_hand_detect_timestamp = this_time
+                        # hand_landmarker_time_skew = self._last_hand_detect_timestamp - self._last_hand_result_timestamp
+                        # if hand_landmarker_time_skew > 50: # FIXME: Make configurable (milliseconds)
+                        #     self._last_hand_result_timestamp += this_time - self._last_hand_detect_timestamp
+                        # else:
+                        #     # Check to see if we have too many hand tracking
+                        #     # frames queued.
+                        #     need_reset = False
+                        #     with self.frames_queued_mutex:
+                        #         if self.frames_queued_face > 5:
+                        #             need_reset = True
+                        #         else:
+                        #             self.frames_queued_hands += 1
+                        #
+                        #     # If we do have too many frames queued, just reset
+                        #     # the tracker to avoid a deadlock.
+                        #     if need_reset:
+                        #         self.landmarker_holistic._runner.restart()
+                        #         self.frames_queued_hands = 0
+                        #     else:
+                        #         print(this_time)
+                        #         self.landmarker_holistic.detect_async(mp_image, this_time)
+                        #         self._last_hand_detect_timestamp = this_time
 
                         # Track the last timestamp because we have to keep
                         # these monotonically increasing and we can't send
@@ -750,10 +782,13 @@ class MediaPipeTracker:
         #     self.landmarker_pose.close()
         if self.landmarker_hands:
             self.landmarker_hands.close()
+        if self.landmarker_holistic:
+            self.landmarker_holistic.close()
 
         self.landmarker = None
         # self.landmarker_pose = None
         self.landmarker_hands = None
+        self.landmarker_holistic = None
 
         # Grumblegrumblegrumble...
         gc.collect()
